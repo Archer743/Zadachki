@@ -1,30 +1,64 @@
 import json
 import datetime
+import os
+from termcolor import colored
 
 
+os.system('color')
+
+
+# Data functions
 def get_data():
-    try:
-        with open('data.json', 'r') as file:
-            return json.load(file)
-    except:
-        return None
+    with open("data.json", "r") as file:
+        return json.load(file)
 
 def update_data(data):
-    try:
-        with open('data.json', 'w') as file:
-            return json.dump(data, file, indent=4)
-    except:
-        return None
+    with open("data.json", "w") as file:
+        json.dump(data, file, indent=4)
 
-def remove_todo(name:str):
+def remove_todo(author, name:str):
     try:
         data = get_data()
-        del data[name]
+        del data[author][name]
         update_data(data)
         return True
     except:
         return False
 
+def add_user(user:str):
+    data = get_data()
+    if user not in data.keys():
+        data[user] = {}
+        update_data(data)
+
+def help(command="all"):
+    output = ""
+    command = command.lower()
+
+    if command == "all":
+        output += "{}: {}\n".format(colored("at", "green"), colored("Creates and saves one new todo", "red"))
+        output += "{}: {}\n".format(colored("rt", "green"), colored("Deletes a todo by it's name", "red"))
+        output += "{}: {}\n".format(colored("v", "green"), colored("Shows a todo", "red"))
+        output += "{}: {}\n".format(colored("q", "green"), colored('Closes this "app"', "red"))
+        output += "{}: {}\n".format(colored("h", "green"), colored('Shows this help message', "red"))
+
+    else:
+        if command == "at":
+            output = "{}: {}\n".format(colored("at", "green"), colored("Creates and saves one new todo", "red"))
+
+        elif command == "rt":
+            output = "{}: {}\n".format(colored("rt", "green"), colored("Deletes a todo by it's name", "red"))
+
+        elif command == "v":
+            output = "{}: {}\n".format(colored("v", "green"), colored("Shows a todo", "red"))
+
+        elif command == "q":
+            output = "{}: {}\n".format(colored("q", "green"), colored('Closes this "app"', "red"))
+
+        elif command == "h":
+            output = "{}: {}\n".format(colored("h", "green"), colored('Shows this help message', "red"))
+
+    print(output)
 
 class ToDo:
     def __init__(self, name=None, author=None, day_assigned=None, text=None):
@@ -35,51 +69,84 @@ class ToDo:
 
     def push_to_json(self):
         data = get_data()
-        data[self.name] = {
-            "author": self.author,
+        data[self.author][self.name] = {
             "day_assigned": self.day_assigned,
             "text": self.text
         }
         update_data(data)
     
-    def get_from_json(self, name):
+    def get_from_json(self, author, name):
         data = get_data()
         try:
-            self.author = data[name]["author"]
+            self.author = author
             self.name = name
-            self.day_assigned = data[name]["day_assigned"]
-            self.text = data[name]["text"]
+            self.day_assigned = data[author][name]["day_assigned"]
+            self.text = data[author][name]["text"]
+            return True
         except:
-            pass
+            print("Todo not found!")
+            return False
+
+    def print_todo(self):
+        output = f"""
+        ________________________{colored("ToDo", "yellow")}_______________________
+        |{colored("Author", "green")}: {colored(self.author, "red")}
+        |{colored("Name", "green")}: {colored(self.name, "red")}
+        |{colored("Day Assigned", "green")}: {colored(self.day_assigned, "red")}
+        |{colored("Task", "green")}: {colored(self.text, "red", "on_grey")}
+        |__________________________________________________
+        """
+        print(output)
 
 
 # Main
 exit = False
-print("Welcome to To-Do!")
-author = input("Please enter your username:\n")
+print(colored("Welcome to ToDo!", "magenta"))
+author = input(colored("Please enter your username:\n", "magenta"))
+add_user(author)
 
 while not exit:
-    option = input("Please enter what do you want to do now from these options? [add_todo], [remove_todo], [quit]")
-
-    if option.lower() == "add_todo":
-        name = input("Enter name:\n") 
+    option = input(colored("Select option: [at], [rt], [v], [q], [h]\n", "magenta")).lower()
+    
+    if option == "h":
+        help(command=input(colored('Enter the unknown command (for all commands -> enter "all"):\n', "yellow")))
+    
+    elif option == "at":
+        name = input(colored("Enter todo's name:\n", "yellow")) 
+        text = input(colored("Enter the assignment:\n", "yellow"))
         day_assigned = datetime.datetime.now().strftime("%a, %#d %B %Y, %I:%M %p, UTC")
-        text = input("Enter the assignment:\n")
 
-        ToDo(name, author, day_assigned, text)
-        ToDo.push_to_json()
-        print("Todo added successfully!")
+        todo = ToDo(name, author, day_assigned, text)
+        todo.push_to_json()
+        print(colored("Todo added successfully!", "yellow"))
 
-    elif option.lower() == "remove_todo":
-        name = input("Enter name:\n")
-        if not remove_todo(name):
+    elif option == "rt":
+        name = input(colored("Enter todo's name:\n", "yellow"))
+        if not remove_todo(author, name):
             while True:
-                name = input("Enter a valid name:\n")
-                if remove_todo:
+                name = input(colored("Enter a valid name:\n", "yellow"))
+                if remove_todo(author, name):
+                    print(colored("Todo was deleted successfully!", "yellow"))
                     break
-                elif name == "quit":
+                elif name == "q":
+                    print(colored("Bye, bye!", "magenta"))
                     exit = True
+                    break
+                elif name == "back":
+                    break
 
-    elif option.lower() == "quit":
-        print("Bye, bye!")
+            continue
+
+        print(colored("Todo was deleted successfully!", "yellow"))
+
+    elif option == "v":
+        name = input(colored("Enter todo's name:\n", "yellow"))
+        data = get_data()
+        todo = ToDo()
+        found = todo.get_from_json(author, name)
+        if found:
+            todo.print_todo()
+
+    elif option == "q":
+        print(colored("Bye, bye!", "magenta"))
         exit = True
