@@ -1,0 +1,12 @@
+{
+    "Archer": {
+        "password": "12345678",
+        "sended_mails": [],
+        "received_mails": []
+    },
+    "Duner": {
+        "password": "123456",
+        "sended_mails": [],
+        "received_mails": []
+    }
+}
