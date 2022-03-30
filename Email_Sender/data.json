@@ -1,12 +1,56 @@
 {
     "Archer": {
-        "password": "12345678",
-        "sended_mails": [],
-        "received_mails": []
+        "password": "123",
+        "s_id": 1,
+        "r_id": 2,
+        "sent_mails": [
+            {
+                "id": 1,
+                "receiver": "Emil",
+                "message": "Hello World!",
+                "date": "Thu, 24 March 2022, 12:26 AM, UTC"
+            }
+        ],
+        "received_mails": [
+            {
+                "id": 1,
+                "sender": "Emil",
+                "message": "Hello, hello!",
+                "date": "Thu, 24 March 2022, 12:27 AM, UTC"
+            },
+            {
+                "id": 2,
+                "sender": "Emil",
+                "message": "How are you?",
+                "date": "Thu, 24 March 2022, 12:27 AM, UTC"
+            }
+        ]
     },
-    "Duner": {
-        "password": "123456",
-        "sended_mails": [],
-        "received_mails": []
+    "Emil": {
+        "password": "1234",
+        "s_id": 2,
+        "r_id": 1,
+        "sent_mails": [
+            {
+                "id": 1,
+                "receiver": "Archer",
+                "message": "Hello, hello!",
+                "date": "Thu, 24 March 2022, 12:27 AM, UTC"
+            },
+            {
+                "id": 2,
+                "receiver": "Archer",
+                "message": "How are you?",
+                "date": "Thu, 24 March 2022, 12:27 AM, UTC"
+            }
+        ],
+        "received_mails": [
+            {
+                "id": 1,
+                "sender": "Archer",
+                "message": "Hello World!",
+                "date": "Thu, 24 March 2022, 12:26 AM, UTC"
+            }
+        ]
     }
 }
