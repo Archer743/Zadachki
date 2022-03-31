@@ -15,5 +15,5 @@ qr = qrcode.QRCode(
 data = "https://www.youtube.com/watch?v=JrdGAcZ8vhs"
 qr.add_data(data=data)
 qr.make(fit=True)
-image = qr.make_image(fill="white", back_color="orange")
+image = qr.make_image(fill="black", back_color="orange")
 image.save("RR.png")
