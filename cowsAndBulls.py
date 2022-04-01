@@ -1,47 +1,40 @@
 from random import randint
-from math import floor
 from termcolor import colored
 from os import system
 
 system("color")
 
-def numToList(number : int):
-    l = []
-    while number:
-        l.append(number % 10)
-        number = floor(number/10)
-    l.reverse()
-    return l
 
-def game(number : int):
+def numToList(number : int):
+    return [int(element) for element in list(str(number))]
+
+def checkNums(c_num, u_num):  # computer number, user number
+    cDigitList = numToList(c_num)
+    uDigitList = numToList(u_num)
+    cows, bulls = 0, 0
+
+    for index in range(len(uDigitList)):
+        if uDigitList[index] == cDigitList[index]: cows += 1
+        else: bulls += 1
+    
+    return [cows, bulls]
+
+def game(c_num : int):
+    print(colored(text="Let's play a game of Cowbull!", color="magenta"))
     guesses = 1
-    digitList = numToList(number)
     
     while True:
-        iNum = int(ans if (ans := input("Enter a number: ")) != "s" else -1)
+        u_num = int(ans if (ans := input("Enter a number: ")) != "stop" else -1)
 
-        if iNum == -1: 
-            print(colored(text=f"Answer: {number}", color="green"))
+        if u_num == -1: 
+            print(colored(text=f"Answer: {c_num}", color="green"))
             break
-        elif iNum < 1000 or iNum > 9999: break
+        elif u_num < 1000 or u_num > 9999: break
         
-        iNumDigitList = numToList(iNum)
-        indexFound = []
-        
-        cows, bulls = 0, 0
-        for index in range(len(iNumDigitList)):
-            if iNumDigitList[index] == digitList[index]: 
-                cows += 1
-                indexFound.append(index)
-            else:
-                for i in range(index, len(iNumDigitList)):
-                    if iNumDigitList[i] == digitList[i] and not (i in indexFound):
-                        bulls += 1
-                        indexFound.append(index)
-                        break
-        
+        cows, bulls = checkNums(c_num, u_num)
+
         if cows == 4:
-            print(colored(text="Correct! You guessed the number!", color="green"))
+            print(colored(text=f"Correct! You guessed the number! Number: {c_num}", color="green"))
             print(colored(text=f"Guesses: {guesses}", color="yellow"))
             break
         else:
