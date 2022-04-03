@@ -69,16 +69,23 @@ class Hangman:
                 print(colored(text="You lost!", color="red"))
                 print(colored(text=f"Word: {self.cur_word}", color="magenta"))
                 break
+            elif ("_" not in self.word_by_guessed_letters()):
+                print(colored(text="You win!", color="green"))
+                print(colored(text=f"Word: {self.cur_word}", color="magenta"))
+                break
+
 
             letter = input(colored(text="Enter a letter: ", color="yellow"))
+
 
             if letter.lower() == "exit":
                 print(colored(text=f"Word: {self.cur_word}", color="magenta"))
                 break
-            elif ("_" not in self.word_by_guessed_letters()) or letter == self.cur_word:
+            elif letter == self.cur_word:
                 print(colored(text="You win!", color="green"))
                 print(colored(text=f"Word: {self.cur_word}", color="magenta"))
                 break
+
 
             if letter not in self.letters_guessed:
                 if letter in self.cur_word:
