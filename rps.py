@@ -72,4 +72,4 @@ output = f"""
     {colored("STATUS: ", "yellow")} {status}
     ====================================================
 """
-print(output) 
+print(output)
