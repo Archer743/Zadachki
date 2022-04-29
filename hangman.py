@@ -9,10 +9,12 @@ class Hangman:
     def __init__(self):
         self.r = RandomWords()
         
-        self.cur_word = self.r.get_random_word(hasDictionaryDef="true", includePartOfSpeech="noun", minCorpusCount=1, maxCorpusCount=10, minDictionaryCount=1, maxDictionaryCount=10, minLength=5, maxLength=10)
+        self.cur_word = rand_word if (rand_word := self.r.get_random_word(hasDictionaryDef="true", includePartOfSpeech="noun", minCorpusCount=1, maxCorpusCount=10, minDictionaryCount=1, maxDictionaryCount=10, minLength=5, maxLength=10)) != None else "banana"
+        self.letters_guessed = []
+        self.letters_failed = []
         
         self.attempts = 6
-        self.letters_guessed = []
+        self.guessed = False
 
     def __str__(self):
         return f"Current word: {self.cur_word}"
@@ -56,11 +58,52 @@ class Hangman:
             else: result += " _ "
         
         return result
+    
+    def start_game(self):
+        print(colored(text="Let's play Hangman!", color="magenta"))
+        self.draw_person()
+        print(self.word_by_guessed_letters())
+        
+        while True:
+            if self.attempts == 0:
+                print(colored(text="You lost!", color="red"))
+                print(colored(text=f"Word: {self.cur_word}", color="magenta"))
+                break
+            elif ("_" not in self.word_by_guessed_letters()):
+                print(colored(text="You win!", color="green"))
+                print(colored(text=f"Word: {self.cur_word}", color="magenta"))
+                break
 
+
+            letter = input(colored(text="Enter a letter: ", color="yellow"))
+
+
+            if letter.lower() == "exit":
+                print(colored(text=f"Word: {self.cur_word}", color="magenta"))
+                break
+            elif letter == self.cur_word:
+                print(colored(text="You win!", color="green"))
+                print(colored(text=f"Word: {self.cur_word}", color="magenta"))
+                break
+
+
+            if letter not in self.letters_guessed:
+                if letter in self.cur_word:
+                    self.letters_guessed.append(letter)
+                    print(colored(text="Correct!", color="green"))
+                    print(self.word_by_guessed_letters())
+                    self.draw_person()
+                elif letter in self.letters_failed:
+                    print(colored(text="Already failed! Continue!", color="red"))
+                else:
+                    self.attempts -= 1
+                    self.letters_failed.append(letter)
+                    self.draw_person()
+                    if self.attempts != 0: print(colored(text="Incorrect! Try again!", color="red"))
+            else:
+                print(colored(text="Already quessed! Continue!", color="green"))
 
 
 if __name__ == "__main__":
     game = Hangman()
-    print(game)
-    game.draw_person()
-    print(game.word_by_guessed_letters())
+    game.start_game()
