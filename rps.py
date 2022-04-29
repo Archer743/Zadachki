@@ -1,6 +1,7 @@
 # rps -> rock paper scissors
 import random
 import os
+import string
 from sys import exit
 from termcolor import colored
 
@@ -71,4 +72,4 @@ output = f"""
     {colored("STATUS: ", "yellow")} {status}
     ====================================================
 """
-print(output)
+print(output) 
